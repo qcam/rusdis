@@ -27,10 +27,10 @@ impl RedisClient {
         RedisClient::read_full_response(stream, &mut msg_vec);
         let msg = String::from_utf8(msg_vec).unwrap();
 
-        if &output_buffer == b"+" {
-            return Ok(msg);
-        } else {
-            return Err(msg);
+        match output_buffer[0] {
+            b'+' => return Ok(msg),
+            b'-' => return Err(msg),
+            _ => return Err(format!("Got unknown message: {}", msg)),
         }
     }
 
@@ -43,7 +43,6 @@ impl RedisClient {
 
         while &output_buffer != b"\n" {
             RedisClient::read_one_byte_response(stream, &mut output_buffer);
-            // stream.read(&mut output_buffer).unwrap();
             vector.push(output_buffer[0]);
         }
     }
