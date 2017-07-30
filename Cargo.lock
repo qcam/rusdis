@@ -1,0 +1,4 @@
+[root]
+name = "redis-rs"
+version = "0.1.0"
+
